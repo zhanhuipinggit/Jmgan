@@ -1,23 +1,28 @@
 package main
 
 import (
-	"fmt"
 	"gan"
 	"net/http"
 )
 
 func main() {
 
-	engine := gan.New()
-	engine.GET("/", func(writer http.ResponseWriter, request *http.Request) {
-		fmt.Fprintf(writer, "URL.Path = %q\n", request.URL.Path)
+	r := gan.New()
+	r.GET("/", func(c *gan.Context) {
+		c.Html(http.StatusOK, "<h1>Hello Gan</h1>")
+	})
+	r.GET("/hello", func(c *gan.Context) {
+		// expect /hello?name=geektutu
+		c.String(http.StatusOK, "hello %s, you're at %s\n", c.Query("name"), c.Path)
+	})
 
+	r.POST("/login", func(c *gan.Context) {
+		c.Json(http.StatusOK, map[string]interface{}{
+			"username": c.PostFrom("username"),
+			"password": c.PostFrom("password"),
+		})
 	})
-	engine.GET("/hello", func(writer http.ResponseWriter, request *http.Request) {
-		for k, v := range request.Header {
-			fmt.Fprintf(writer, "key[%q]= %q\n", k, v)
-		}
-	})
-	engine.Run(":9999")
+
+	r.Run(":9999")
 
 }
