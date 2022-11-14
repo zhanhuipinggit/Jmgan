@@ -11,7 +11,7 @@ type Engine struct {
 }
 
 func New() *Engine {
-	return &Engine{router: CreateRouter()}
+	return &Engine{router: newRouter()}
 }
 func (engine *Engine) Route(method string, pattern string, handler HandlerFunc) {
 	engine.router.addRoute(method, pattern, handler)

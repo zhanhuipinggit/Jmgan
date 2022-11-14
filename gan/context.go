@@ -6,12 +6,19 @@ import (
 	"net/http"
 )
 
+type H map[string]interface{}
 type Context struct {
 	Writer  http.ResponseWriter
 	Request *http.Request
 	Path    string
 	Method  string
 	Code    int
+	Params  map[string]string
+}
+
+func (c *Context) Param(key string) string {
+	value, _ := c.Params[key]
+	return value
 }
 
 func CreateContext(w http.ResponseWriter, r *http.Request) *Context {
